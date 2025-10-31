@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="so">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>C.S Company Admin - Orders</title>
+  <style>
+    :root{
+      --blue:#0b4f8b;
+      --accent:#0b6fb5;
+      --light:#f6f9fc;
+      --muted:#6b7280;
+      --danger:#ff6b6b;
+      font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;
+      --radius:10px;
+    }
+    /* Layout */
+    body{background:var(--light);margin:0;padding:20px;display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+    .box{max-width:1100px;width:100%;background:#fff;border-radius:var(--radius);box-shadow:0 10px 30px rgba(11,79,139,0.08);overflow:hidden}
+    header{background:linear-gradient(90deg,var(--blue),var(--accent));color:#fff;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    header h1{margin:0;font-size:18px}
+    .content{padding:18px}
+    /* Login */
+    #loginBox{padding:12px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    input[type="password"]{padding:10px;border-radius:8px;border:1px solid #e6eef8;flex:1 1 260px;min-width:0}
+    .btn{padding:10px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;color:var(--blue);border:1px solid rgba(11,79,139,0.08)}
+    .btn.danger{background:var(--danger)}
+    .muted{color:var(--muted);font-size:13px}
+    /* Table */
+    .table-wrap{width:100%;overflow-x:auto;margin-top:12px;border-radius:8px}
+    table{width:100%;border-collapse:collapse;min-width:900px}
+    th,td{padding:10px 12px;border-bottom:1px solid #eef6fb;text-align:left;font-size:14px;vertical-align:middle}
+    th{background:#f4fbff;color:var(--blue);font-weight:600;position:sticky;top:0}
+    .actions button{margin-right:8px}
+    .small{font-size:13px;color:var(--muted)}
+    /* Responsive tweaks */
+    @media (max-width:900px){
+      header{padding:12px}
+      .content{padding:12px}
+      th,td{padding:10px 8px;font-size:13px}
+      table{min-width:700px}
+    }
+    @media (max-width:600px){
+      body{padding:12px}
+      header h1{font-size:16px}
+      .box{border-radius:12px}
+      #loginBox{flex-direction:column;align-items:stretch}
+      input[type="password"]{width:100%}
+      .btn{width:100%}
+      .controls-row{display:flex;flex-direction:column;gap:8px}
+      table{min-width:600px}
+    }
+
+    /* Optional: make table rows appear card-like on very small screens */
+    @media (max-width:420px){
+      .table-wrap{margin-top:8px}
+      table, thead, tbody, th, td, tr { display:block; }
+      thead { display:none; }
+      tr{margin-bottom:12px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(11,79,139,0.03);padding:10px}
+      td{border:none;display:flex;justify-content:space-between;padding:6px 0}
+      td::before{content:attr(data-label);font-weight:600;color:var(--muted);margin-right:8px;flex:0 0 40%}
+      td span{flex:1;text-align:right}
+    }
+
+    /* small helper */
+    .row{display:flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
+  </style>
+</head>
+<body>
+  <div class="box" role="main" aria-labelledby="title">
+    <header>
+      <h1 id="title">C.S Company - Admin Orders</h1>
+      <div style="font-size:13px" aria-hidden="true">Ciise Shoole 🔱</div>
+    </header>
+
+    <div class="content" id="mainArea">
+      <!-- LOGIN -->
+      <div id="loginBox" aria-live="polite">
+        <div style="flex:1 1 320px">
+          <div class="muted">Fadlan geli password si aad u aragto orders (admin only)</div>
+          <div style="height:8px"></div>
+          <div style="display:flex;gap:8px">
+            <input id="password" type="password" placeholder="Password" aria-label="Password">
+            <button class="btn" id="togglePass" title="Show / hide password">Show</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn" id="loginBtn">Login</button>
+          <button class="btn ghost" id="demoBtn" title="Add sample order">Add Demo</button>
+        </div>
+      </div>
+
+      <!-- ADMIN AREA -->
+      <div id="adminArea" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <h3 style="margin:0 0 6px 0">Orders (Local Storage)</h3>
+            <div class="muted">Kaliya adiga ayaa arki kara boggan haddii aad haysato password-ka.</div>
+          </div>
+          <div class="row controls-row">
+            <button class="btn" id="exportBtn">Export CSV</button>
+            <button class="btn danger" id="clearBtn">Clear All</button>
+          </div>
+        </div>
+
+        <div class="table-wrap" aria-live="polite">
+          <table id="ordersTable" role="table" aria-label="Orders table">
+            <thead><tr><th>ID</th><th>Magac</th><th>Phone</th><th>Region</th><th>Product</th><th>Payment</th><th>Price</th><th>Time</th><th>Action</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const ADMIN_PASS = 'Ciise000@';
+  const loginBtn = document.getElementById('loginBtn');
+  const passwordInput = document.getElementById('password');
+  const adminArea = document.getElementById('adminArea');
+  const loginBox = document.getElementById('loginBox');
+  const ordersTableBody = document.querySelector('#ordersTable tbody');
+  const exportBtn = document.getElementById('exportBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const togglePass = document.getElementById('togglePass');
+  const demoBtn = document.getElementById('demoBtn');
+
+  function makeRowHTML(o){
+    // For responsive small-screen support we add data-label attributes when rendering
+    return '<tr>' +
+      '<td data-label="ID"><span>'+o.id+'</span></td>' +
+      '<td data-label="Magac"><span>'+escapeHtml(o.name)+'</span></td>' +
+      '<td data-label="Phone"><span>'+escapeHtml(o.phone)+'</span></td>' +
+      '<td data-label="Region"><span>'+escapeHtml(o.region)+'</span></td>' +
+      '<td data-label="Product"><span>'+escapeHtml(o.product)+'</span></td>' +
+      '<td data-label="Payment"><span>'+escapeHtml(o.payment)+'</span></td>' +
+      '<td data-label="Price"><span>$'+String(o.price)+'</span></td>' +
+      '<td data-label="Time"><span>'+new Date(o.time).toLocaleString()+'</span></td>' +
+      '<td data-label="Action" class="actions"><button data-id="'+o.id+'" class="btn viewBtn">View</button><button data-id="'+o.id+'" class="btn delBtn" style="background:#ff6b6b">Delete</button></td>' +
+      '</tr>';
+  }
+
+  function escapeHtml(s){
+    if(s === undefined || s === null) return '';
+    return String(s).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];});
+  }
+
+  function loadOrders(){
+    const orders = JSON.parse(localStorage.getItem('cs_orders') || '[]');
+    ordersTableBody.innerHTML = '';
+    if(!orders.length) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td colspan="9" class="small">Ma jiraan orders.</td>';
+      ordersTableBody.appendChild(tr);
+      return;
+    }
+    // most recent first
+    orders.slice().reverse().forEach(o => {
+      const wrapper = document.createElement('tbody');
+      wrapper.innerHTML = makeRowHTML(o);
+      // append the single tr
+      ordersTableBody.appendChild(wrapper.firstElementChild);
+    });
+    attachRowEvents();
+  }
+
+  function attachRowEvents(){
+    document.querySelectorAll('.delBtn').forEach(b=>b.addEventListener('click', e=>{
+      const id = e.target.getAttribute('data-id');
+      if(!confirm('Miyaad xaqiijinaysaa inaad tirtirto order-ka ' + id + '?')) return;
+      let orders = JSON.parse(localStorage.getItem('cs_orders') || '[]');
+      orders = orders.filter(x=>x.id!==id);
+      localStorage.setItem('cs_orders', JSON.stringify(orders));
+      loadOrders();
+    }));
+    document.querySelectorAll('.viewBtn').forEach(b=>b.addEventListener('click', e=>{
+      const id = e.target.getAttribute('data-id');
+      const orders = JSON.parse(localStorage.getItem('cs_orders') || '[]');
+      const o = orders.find(x=>x.id===id);
+      if(!o) return alert('Order lama helin');
+      // show friendly view
+      const lines = [
+        'ID: '+o.id,
+        'Magac: '+o.name,
+        'Phone: '+o.phone,
+        'Region: '+o.region,
+        'Product: '+o.product,
+        'Payment: '+o.payment,
+        'Price: $'+o.price,
+        'Time: '+new Date(o.time).toLocaleString()
+      ];
+      alert(lines.join('\\n'));
+    }));
+  }
+
+  loginBtn.addEventListener('click', ()=>{
+    if(passwordInput.value === ADMIN_PASS){
+      loginBox.style.display='none';
+      adminArea.style.display='block';
+      sessionStorage.setItem('cs_admin_logged','1');
+      loadOrders();
+    } else {
+      alert('Password khaldan');
+    }
+  });
+
+  // toggle show/hide password (useful on mobile)
+  togglePass.addEventListener('click', ()=>{
+    if(passwordInput.type === 'password'){ passwordInput.type='text'; togglePass.textContent='Hide'; }
+    else { passwordInput.type='password'; togglePass.textContent='Show'; }
+  });
+
+  // export CSV
+  exportBtn.addEventListener('click', ()=>{
+    const orders = JSON.parse(localStorage.getItem('cs_orders') || '[]');
+    if(!orders.length) { alert('Ma jiraan orders'); return; }
+    const csv = ['id,name,phone,region,product,payment,price,time'];
+    orders.forEach(o=> csv.push([o.id,o.name,o.phone,o.region,o.product,o.payment,o.price,o.time].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')));
+    const blob = new Blob([csv.join('\\n')], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cs_orders_' + Date.now() + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // clear all
+  clearBtn.addEventListener('click', ()=>{
+    if(!confirm('Miyaad rabtaa inaad tirtirto dhammaan orders?')) return;
+    localStorage.removeItem('cs_orders');
+    loadOrders();
+  });
+
+  // allow simple login by pressing Enter
+  passwordInput.addEventListener('keyup', (e)=>{ if(e.key==='Enter') loginBtn.click(); });
+
+  // If already logged in (session storage), auto show
+  if(sessionStorage.getItem('cs_admin_logged') === '1'){
+    loginBox.style.display='none'; adminArea.style.display='block'; loadOrders();
+  }
+
+  // demo button: add a sample order (handy for testing on mobile)
+  demoBtn.addEventListener('click', ()=>{
+    const orders = JSON.parse(localStorage.getItem('cs_orders') || '[]');
+    const id = 'ORD' + Math.floor(Math.random()*90000+10000);
+    orders.push({ id, name:'Ahmed', phone:'0612345678', region:'Mogadishu', product:'Gari', payment:'Cash', price:49.99, time: Date.now() });
+    localStorage.setItem('cs_orders', JSON.stringify(orders));
+    alert('Demo order la dhajiyey: ' + id);
+  });
+
+})();
+</script>
+</body>
+</html>
