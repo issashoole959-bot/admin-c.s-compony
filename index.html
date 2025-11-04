@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-  <meta name="color-scheme" content="light only" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <title>C.S Company Admin - Orders</title>
   <style>
     :root{
@@ -23,7 +22,7 @@
       justify-content:center;
       align-items:flex-start;
       min-height:100vh;
-      font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
       line-height:1.5;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
@@ -34,7 +33,7 @@
     .header-actions{display:flex;gap:8px;align-items:center}
     .content{padding:18px}
     #loginBox{padding:12px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-    input[type="password"],input[type="text"],input[type="tel"],textarea{padding:10px;border-radius:8px;border:1px solid #e6eef8;flex:1 1 260px;min-width:0}
+    input[type="password"], input[type="text"], input[type="tel"], textarea{padding:10px;border-radius:8px;border:1px solid #e6eef8;flex:1 1 260px;min-width:0}
     textarea{min-height:100px;resize:vertical}
     .btn{padding:10px 14px;border-radius:8px;border:none;background:var(--blue);color:#fff;cursor:pointer;font-weight:600}
     .btn[disabled]{opacity:0.6;cursor:not-allowed}
@@ -42,7 +41,7 @@
     .btn.danger{background:var(--danger)}
     .btn:hover{opacity:0.95;transition:0.15s}
     .muted{color:var(--muted);font-size:13px}
-    .table-wrap{width:100%;overflow-x:auto;margin-top:12px;border-radius:8px;max-height:70vh;overflow-y:auto}
+    .table-wrap{width:100%;overflow-x:auto;margin-top:12px;border-radius:8px;max-height:70vh;overflow-y:auto;}
     table{width:100%;border-collapse:collapse;min-width:900px}
     th,td{padding:10px 12px;border-bottom:1px solid #eef6fb;text-align:left;font-size:14px;vertical-align:middle}
     th{background:#f4fbff;color:var(--blue);font-weight:600;position:sticky;top:0;z-index:2}
@@ -66,8 +65,8 @@
     }
     @media (max-width:420px){
       .table-wrap{margin-top:8px}
-      table,thead,tbody,th,td,tr{display:block}
-      thead{display:none}
+      table, thead, tbody, th, td, tr { display:block; }
+      thead { display:none; }
       tr{margin-bottom:12px;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(11,79,139,0.03);padding:10px}
       td{border:none;display:flex;justify-content:space-between;padding:6px 0}
       td::before{content:attr(data-label);font-weight:600;color:var(--muted);margin-right:8px;flex:0 0 40%}
@@ -75,37 +74,39 @@
     }
     .row{display:flex;gap:8px;align-items:center}
     .right{margin-left:auto}
-    .btn:focus,input:focus,textarea:focus{outline:3px solid rgba(11,111,181,0.18);outline-offset:2px}
-    td span,.muted,input,textarea{word-break:break-word}
+    .btn:focus, input:focus, textarea:focus { outline:3px solid rgba(11,111,181,0.18); outline-offset:2px; }
+    td span, .muted, input, textarea { word-break:break-word; }
     .contact-wrap{margin-top:18px;padding:14px;border-radius:8px;background:#fbfeff;border:1px solid #eef9ff}
   </style>
 </head>
 <body>
-  <div class="box" role="main" aria-labelledby="title">
+  <div class="box">
     <header>
-      <h1 id="title">C.S Company - Admin Orders</h1>
-      <div class="header-actions" aria-hidden="true">
+      <h1>C.S Company - Admin Orders</h1>
+      <div class="header-actions">
         <div style="font-size:13px">Ciise Shoole 🔱</div>
-        <a href="mailto:cscompany.tech@gmail.com" rel="noopener noreferrer" class="btn ghost" style="text-decoration:none;color:white;background:transparent;border:1px solid rgba(255,255,255,0.15);" title="Email us">Contact</a>
+        <a href="mailto:cscompany.tech@gmail.com" class="btn ghost" style="text-decoration:none;color:white;background:transparent;border:1px solid rgba(255,255,255,0.15);">Contact</a>
       </div>
     </header>
 
-    <div class="content" id="mainArea">
-      <div id="loginBox" aria-live="polite">
+    <div class="content">
+      <!-- LOGIN -->
+      <div id="loginBox">
         <div style="flex:1 1 320px">
           <div class="muted">Fadlan geli password si aad u aragto orders (admin only)</div>
           <div style="height:8px"></div>
           <div style="display:flex;gap:8px">
-            <input id="password" type="password" placeholder="Password" aria-label="Password">
-            <button class="btn" id="togglePass" title="Show / hide password" type="button">Show</button>
+            <input id="password" type="password" placeholder="Password">
+            <button class="btn" id="togglePass" type="button">Show</button>
           </div>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <button class="btn" id="loginBtn" type="button">Login</button>
-          <button class="btn ghost" id="demoBtn" title="Add sample order" type="button">Add Demo</button>
+          <button class="btn ghost" id="demoBtn" type="button">Add Demo</button>
         </div>
       </div>
 
+      <!-- ADMIN AREA -->
       <div id="adminArea" style="display:none">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
           <div>
@@ -119,25 +120,24 @@
           </div>
         </div>
 
-        <div class="table-wrap" aria-live="polite">
-          <table id="ordersTable" role="table" aria-label="Orders table">
-            <thead>
-              <tr><th>ID</th><th>Magac</th><th>Phone</th><th>Region</th><th>Product</th><th>Payment</th><th>Price</th><th>Time</th><th>Action</th></tr>
-            </thead>
+        <div class="table-wrap">
+          <table id="ordersTable">
+            <thead><tr><th>ID</th><th>Magac</th><th>Phone</th><th>Region</th><th>Product</th><th>Payment</th><th>Price</th><th>Time</th><th>Action</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
 
-      <div class="contact-wrap" aria-label="Contact form area">
+      <!-- CONTACT FORM -->
+      <div class="contact-wrap">
         <h3 style="margin:0 0 8px 0">Xiriir / Message</h3>
-        <div class="muted" style="margin-bottom:8px">Haddii aad rabto inaad fariin noo soo dirto, buuxi foomka hoos. Fariinta waxay ku keydsan doontaa local device-ka waxaana admin uu arki karaa marka uu galo.</div>
+        <div class="muted" style="margin-bottom:8px">Buuxi foomka hoos, fariinta waxaa arkaya admin marka uu galo.</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <input id="c_name" type="text" placeholder="Magac" aria-label="Magac" style="flex:1 1 200px">
-          <input id="c_phone" type="tel" placeholder="Phone" aria-label="Phone" style="flex:1 1 160px">
+          <input id="c_name" type="text" placeholder="Magac">
+          <input id="c_phone" type="tel" placeholder="Phone">
         </div>
         <div style="height:8px"></div>
-        <textarea id="c_message" placeholder="Fariintaada..." aria-label="Fariin"></textarea>
+        <textarea id="c_message" placeholder="Fariintaada..."></textarea>
         <div style="height:8px"></div>
         <div style="display:flex;gap:8px">
           <button class="btn" id="sendMsgBtn" type="button">Send Message</button>
@@ -166,89 +166,81 @@
   const sendMsgBtn = document.getElementById('sendMsgBtn');
   const clearFormBtn = document.getElementById('clearFormBtn');
 
-  function safeParse(json, fallback){ try { const v = JSON.parse(json); return v || fallback; } catch(e){ return fallback; } }
+  function safeParse(json, fallback){ try { return JSON.parse(json)||fallback; } catch(e){ return fallback; } }
   function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-
   function makeRowHTML(o){
-    return '<tr>'+
-      '<td data-label="ID"><span>'+escapeHtml(o.id)+'</span></td>'+
-      '<td data-label="Magac"><span>'+escapeHtml(o.name)+'</span></td>'+
-      '<td data-label="Phone"><span>'+escapeHtml(o.phone)+'</span></td>'+
-      '<td data-label="Region"><span>'+escapeHtml(o.region)+'</span></td>'+
-      '<td data-label="Product"><span>'+escapeHtml(o.product)+'</span></td>'+
-      '<td data-label="Payment"><span>'+escapeHtml(o.payment)+'</span></td>'+
-      '<td data-label="Price"><span>$'+String(o.price)+'</span></td>'+
-      '<td data-label="Time"><span>'+new Date(o.time).toLocaleString()+'</span></td>'+
-      '<td data-label="Action" class="actions">'+
-      '<button data-id="'+o.id+'" class="btn viewBtn" type="button">View</button>'+
-      '<button data-id="'+o.id+'" class="btn delBtn" style="background:#ff6b6b" type="button">Delete</button>'+
-      '</td></tr>';
+    return `<tr>
+      <td data-label="ID"><span>${escapeHtml(o.id)}</span></td>
+      <td data-label="Magac"><span>${escapeHtml(o.name)}</span></td>
+      <td data-label="Phone"><span>${escapeHtml(o.phone)}</span></td>
+      <td data-label="Region"><span>${escapeHtml(o.region)}</span></td>
+      <td data-label="Product"><span>${escapeHtml(o.product)}</span></td>
+      <td data-label="Payment"><span>${escapeHtml(o.payment)}</span></td>
+      <td data-label="Price"><span>$${escapeHtml(o.price)}</span></td>
+      <td data-label="Time"><span>${new Date(o.time).toLocaleString()}</span></td>
+      <td data-label="Action" class="actions">
+        <button data-id="${o.id}" class="btn viewBtn" type="button">View</button>
+        <button data-id="${o.id}" class="btn delBtn" style="background:#ff6b6b" type="button">Delete</button>
+      </td></tr>`;
   }
 
   function loadOrders(){
     const orders = safeParse(localStorage.getItem('cs_orders'), []);
     ordersTableBody.innerHTML = '';
-    if(!orders.length){
-      ordersTableBody.innerHTML = '<tr><td colspan="9" class="small">Ma jiraan orders.</td></tr>';
-      return;
-    }
-    orders.slice().reverse().forEach(o=> ordersTableBody.insertAdjacentHTML('beforeend', makeRowHTML(o)));
+    if(!orders.length){ ordersTableBody.innerHTML = '<tr><td colspan="9" class="small">Ma jiraan orders.</td></tr>'; return; }
+    orders.slice().reverse().forEach(o=>ordersTableBody.insertAdjacentHTML('beforeend', makeRowHTML(o)));
     attachRowEvents();
   }
-
   function attachRowEvents(){
     document.querySelectorAll('.delBtn').forEach(b=>b.onclick=e=>{
-      const id = e.target.dataset.id;
-      if(!confirm('Miyaad xaqiijinaysaa inaad tirtirto order-ka '+id+'?')) return;
-      let orders = safeParse(localStorage.getItem('cs_orders'), []);
-      orders = orders.filter(x=>x.id!==id);
-      localStorage.setItem('cs_orders', JSON.stringify(orders));
-      loadOrders();
+      const id=e.target.dataset.id; if(!confirm('Delete '+id+'?'))return;
+      let orders=safeParse(localStorage.getItem('cs_orders'),[]).filter(x=>x.id!==id);
+      localStorage.setItem('cs_orders',JSON.stringify(orders)); loadOrders();
     });
     document.querySelectorAll('.viewBtn').forEach(b=>b.onclick=e=>{
-      const id = e.target.dataset.id;
-      const orders = safeParse(localStorage.getItem('cs_orders'), []);
-      const o = orders.find(x=>x.id===id);
-      if(!o) return alert('Order lama helin');
-      alert('ID: '+o.id+'\nMagac: '+o.name+'\nPhone: '+o.phone+'\nRegion: '+o.region+'\nProduct: '+o.product+'\nPayment: '+o.payment+'\nPrice: $'+o.price+'\nTime: '+new Date(o.time).toLocaleString());
+      const id=e.target.dataset.id; const o=safeParse(localStorage.getItem('cs_orders'),[]).find(x=>x.id===id);
+      if(!o)return alert('Order lama helin');
+      alert(`ID: ${o.id}\nMagac: ${o.name}\nPhone: ${o.phone}\nRegion: ${o.region}\nProduct: ${o.product}\nPayment: ${o.payment}\nPrice: $${o.price}\nTime: ${new Date(o.time).toLocaleString()}`);
     });
+  }
+
+  /* FIX: Update message count + auto load */
+  function loadMessages(){ return safeParse(localStorage.getItem('cs_messages'), []); }
+  function updateMsgCount(){
+    const msgs = loadMessages(); const unread = msgs.length;
+    viewMsgsBtn.textContent = unread>0?`View Messages (${unread})`:"View Messages";
   }
 
   loginBtn.onclick=()=>{
     if(passwordInput.value===ADMIN_PASS){
-      loginBox.style.display='none';
-      adminArea.style.display='block';
+      loginBox.style.display='none'; adminArea.style.display='block';
       sessionStorage.setItem('cs_admin_logged','1');
-      loadOrders();
-    }else alert('Password khaldan');
+      loadOrders(); updateMsgCount();
+    } else alert('Password khaldan');
   };
-  passwordInput.onkeyup=e=>{ if(e.key==='Enter') loginBtn.click(); };
-  togglePass.onclick=()=>{ const t=passwordInput.type==='password'; passwordInput.type=t?'text':'password'; togglePass.textContent=t?'Hide':'Show'; };
+  passwordInput.addEventListener('keyup',e=>{if(e.key==='Enter')loginBtn.click();});
+  togglePass.onclick=()=>{ if(passwordInput.type==='password'){passwordInput.type='text';togglePass.textContent='Hide';}else{passwordInput.type='password';togglePass.textContent='Show';}};
+  demoBtn.onclick=()=>{const o={id:'ORD'+Math.floor(Math.random()*90000+10000),name:'Ahmed',phone:'0612345678',region:'Mogadishu',product:'Gari',payment:'Cash',price:49.99,time:Date.now()};const arr=safeParse(localStorage.getItem('cs_orders'),[]);arr.push(o);localStorage.setItem('cs_orders',JSON.stringify(arr));alert('Demo order la dhajiyey');};
+  exportBtn.onclick=()=>{const arr=safeParse(localStorage.getItem('cs_orders'),[]);if(!arr.length)return alert('Ma jiraan orders');const csv=['id,name,phone,region,product,payment,price,time'];arr.forEach(o=>csv.push([o.id,o.name,o.phone,o.region,o.product,o.payment,o.price,o.time].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')));const blob=new Blob([csv.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cs_orders_'+Date.now()+'.csv';a.click();};
+  clearBtn.onclick=()=>{if(confirm('Clear all?')){localStorage.removeItem('cs_orders');loadOrders();}};
+  if(sessionStorage.getItem('cs_admin_logged')==='1'){loginBox.style.display='none';adminArea.style.display='block';loadOrders();updateMsgCount();}
 
-  demoBtn.onclick=()=>{
-    const orders = safeParse(localStorage.getItem('cs_orders'), []);
-    const id = 'ORD'+Math.floor(Math.random()*90000+10000);
-    orders.push({id,name:'Ahmed',phone:'0612345678',region:'Mogadishu',product:'Gari',payment:'Cash',price:49.99,time:Date.now()});
-    localStorage.setItem('cs_orders', JSON.stringify(orders));
-    alert('Demo order la dhajiyey: '+id);
+  sendMsgBtn.onclick=()=>{
+    const name=c_name.value.trim(),phone=c_phone.value.trim(),msg=c_message.value.trim();
+    if(!name||!msg)return alert('Fadlan buuxi Magac iyo Fariin');
+    const arr=loadMessages();arr.push({id:'MSG'+Math.floor(Math.random()*900000+100000),name,phone,message:msg,time:Date.now()});
+    localStorage.setItem('cs_messages',JSON.stringify(arr));
+    alert('Fariinta waa la diray. Mahadsanid!');
+    c_name.value=c_phone.value=c_message.value='';
+    updateMsgCount(); // update admin count live
   };
-
-  exportBtn.onclick=()=>{
-    const orders=safeParse(localStorage.getItem('cs_orders'),[]);
-    if(!orders.length) return alert('Ma jiraan orders');
-    const csv=['id,name,phone,region,product,payment,price,time'];
-    orders.forEach(o=>csv.push([o.id,o.name,o.phone,o.region,o.product,o.payment,o.price,o.time].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')));
-    const blob=new Blob([csv.join('\n')],{type:'text/csv'});
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(blob);
-    a.download='cs_orders_'+Date.now()+'.csv';
-    a.click();
-    URL.revokeObjectURL(a.href);
+  clearFormBtn.onclick=()=>{c_name.value=c_phone.value=c_message.value='';};
+  viewMsgsBtn.onclick=()=>{
+    const msgs=loadMessages(); if(!msgs.length)return alert('Ma jiraan fariimo.');
+    const lines=msgs.slice().reverse().map(m=>`ID: ${m.id}\nMagac: ${m.name}\nPhone: ${m.phone||'-'}\nTime: ${new Date(m.time).toLocaleString()}\nFariin: ${m.message}\n----`).join('\n\n');
+    if(lines.length>1500){const w=window.open('','_blank');w.document.write('<pre>'+escapeHtml(lines)+'</pre>');}else alert(lines);
   };
-
-  clearBtn.onclick=()=>{
-    if(!confirm('Miyaad rabtaa inaad tirtirto dhammaan orders?')) return;
-    localStorage.removeItem('cs_orders'); loadOrders();
-  };
-
-  if(sessionStorage.getItem('cs_admin_logged')==='1'){ loginBox.style.display='none'; adminArea.style.display='block
+})();
+</script>
+</body>
+</html>
